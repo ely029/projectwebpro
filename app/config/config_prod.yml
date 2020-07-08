@@ -1,0 +1,65 @@
+imports:
+    - { resource: config.yml }
+
+#doctrine:
+#    orm:
+#        metadata_cache_driver: apc
+#        result_cache_driver: apc
+#        query_cache_driver: apc
+parameters:
+    httpProtocol: https
+    
+monolog:
+    handlers:
+        main:
+            type: fingers_crossed
+            action_level: error
+            handler: nested
+        nested:
+            type: stream
+#            path: '%kernel.logs_dir%/%kernel.environment%.log'
+            path: 'php://stderr'
+            level: debug
+        console:
+            type: console
+            process_psr_3_messages: false
+# Sendgrid
+# swiftmailer:
+#     transport: '%sendgrid_mailer_transport%'
+#     host: '%sendgrid_mailer_host%'
+#     username: '%sendgrid_mailer_user%'
+#     password: '%sendgrid_mailer_password%'
+    
+# Gmail 
+swiftmailer:
+    transport: gmail
+    username:  projectpro.info@gmail.com
+    password:  vayyocldjopksipj
+
+# Godaddy smtp
+#swiftmailer:
+#    transport: '%gd_mailer_transport%'
+#    host: '%gd_mailer_host%'
+#    port: '%gd_mailer_port%'
+
+
+# Don't uncomment this - Test only
+#    username: '%gd_mailer_username%'
+#    password: '%gd_mailer_password%'
+#    encryption: '%gd_mailer_encrpytion%'
+
+# doctrine:
+#     dbal:
+#         host: '%env(RDS_HOSTNAME)%'
+#         port: '%env(RDS_PORT)%'
+#         dbname: '%env(RDS_DB_NAME)%'
+#         user: '%env(RDS_USERNAME)%'
+#         password: '%env(RDS_PASSWORD)%'
+        
+doctrine:
+    dbal:
+        host: 'a07yd3a6okcidwap.cbetxkdyhwsb.us-east-1.rds.amazonaws.com'
+        port: '3306'
+        dbname: 'yjk65kqfblljtc6t'
+        user: 'whtjbcmxca2mva1a'
+        password: 'da7ow979nv0c9cge'

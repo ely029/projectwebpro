@@ -1,0 +1,58 @@
+imports:
+    - { resource: config.yml }
+
+#doctrine:
+#    orm:
+#        metadata_cache_driver: apc
+#        result_cache_driver: apc
+#        query_cache_driver: apc
+parameters:
+    httpProtocol: https
+monolog:
+    handlers:
+        main:
+            type: fingers_crossed
+            action_level: error
+            handler: nested
+        nested:
+            type: stream
+            # path: '%kernel.logs_dir%/%kernel.environment%.log'
+            path: 'php://stderr'
+            level: debug
+        console:
+            type: console
+            process_psr_3_messages: false
+
+# Sendgrid
+# swiftmailer:
+#     transport: '%sendgrid_mailer_transport%'
+#     host: '%sendgrid_mailer_host%'
+#     username: '%sendgrid_mailer_user%'
+#     password: '%sendgrid_mailer_password%'
+swiftmailer:
+    transport: gmail
+    username:  projectpro.info@gmail.com
+    password:  projectpro1234
+# heroku
+# doctrine:
+#     dbal:
+#         host: '%heroku_database_host%'
+#         port: '%heroku_database_port%'
+#         dbname: '%heroku_database_name%'
+#         user: '%heroku_database_user%'
+#         password: '%heroku_database_password%'
+# heroku
+# doctrine:
+#     dbal:
+#         host: 'a07yd3a6okcidwap.cbetxkdyhwsb.us-east-1.rds.amazonaws.com'
+#         port: '3306'
+#         dbname: 'yjk65kqfblljtc6t'
+#         user: 'whtjbcmxca2mva1a'
+#         password: 'da7ow979nv0c9cge'
+doctrine:
+    dbal:
+        host: 'projectpro.ckmlnd5q6yq4.us-east-1.rds.amazonaws.com'
+        port: '3306'
+        dbname: 'projectpro'
+        user: 'projectpro'
+        password: 'CDE#4rfv'
