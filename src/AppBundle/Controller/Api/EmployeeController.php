@@ -72,10 +72,10 @@ class EmployeeController extends Controller {
         } else {
             $employee = $existingEmployee;
             $employee->setEnabled(true);
-            
+
             $user->setFirstName($firstName)
                     ->setLastName($lastName);
-            
+
             $this->get('pp_employee.handler')->setRoles($employee, $roles);
             $employeeId = $employee->getId();
         }
@@ -117,7 +117,134 @@ class EmployeeController extends Controller {
             }
 
             $employeePaymentType = new \AppBundle\Entity\EmployeePaymentType();
-            
+
+
+            $employeePaymentType->setEmployee($employee)
+                    ->setPaymentType($paymentType)
+                    ->setEnabled(true);
+
+            $em->persist($employeePaymentType);
+        }
+
+        $em->flush();
+
+        if ($existingEmployee) {
+            return new JsonResponse([
+                'message' => 'User/Employee Already Exists. User Information Updated.',
+                'success' => true
+                    ], 201);
+        }
+
+        return new JsonResponse([
+            'message' => 'Employee has been added!',
+            'success' => true
+                ], 201);
+    }
+
+    /**
+     * @Route("/api/add/user", name="apiUserNew")
+     * @Method("POST")
+     */
+    public function newUserAction($id, Request $request) {
+        $params = $this->getRequest();
+        $company = $this->get('pp_util.handler')->getCompany($id);
+        $firstName = $params['firstName'];
+        $lastName = $params['lastName'];
+        $email = $params['email'];
+        $roles = $params['roles'];
+        $paymentTypes = $params['paymentTypes'];
+
+
+        $existingUser = $this->getDoctrine()
+                ->getRepository('AppBundle:User')
+                ->findOneBy(['email' => $email]);
+
+        if (!$existingUser) {
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                return new JsonResponse([
+                    'success' => false,
+                    'errorMessage' => "Invalid email format"
+                ]);
+            }
+
+            $userManager = $this->get('fos_user.user_manager');
+
+            $user = $userManager->createUser();
+            $user->setEmail($email)
+                    //->setPlainPassword(uniqid())
+                    ->setPlainPassword('secretpassword') // TODO: change temp password
+                    ->setEnabled(true)
+                    ->setPasswordSetToken($this->generateRandomString())
+                    ->setFirstName($firstName)
+                    ->setLastName($lastName);
+
+            $userManager->updateUser($user);
+        } else {
+            $user = $existingUser;
+        }
+
+        $admin = $this->getUser(); // TODO: get admin id from request
+
+        $existingEmployee = $this->getDoctrine()
+                ->getRepository('AppBundle:Employee')
+                ->findOneBy(['user' => $user, 'company' => $company]);
+
+        if (!$existingEmployee) {
+            $this->get('pp_employee.handler')->createEmployee($user, $company, $admin, $roles);
+
+            $employee = $this->getDoctrine()
+                    ->getRepository('AppBundle:Employee')
+                    ->findBy(['user' => $user, 'company' => $company]);
+            $employeeId = $employee[0]->getId();
+        } else {
+            $employee = $existingEmployee;
+            $employee->setEnabled(true);
+
+            $user->setFirstName($firstName)
+                    ->setLastName($lastName);
+
+            $this->get('pp_employee.handler')->setRoles($employee, $roles);
+            $employeeId = $employee->getId();
+        }
+
+
+
+        $em = $this->getDoctrine()->getManager();
+
+        $employee = $this->getDoctrine()
+                    ->getRepository('AppBundle:Employee')
+                    ->find($employeeId);
+
+        // Clear Employee Payment Types
+        $existingEmployeePaymentTypes = $this->getDoctrine()
+                ->getRepository('AppBundle:EmployeePaymentType')
+                ->findBy(['employee' => $employee]);
+
+        foreach ($existingEmployeePaymentTypes as $eept) {
+            $em->remove($eept);
+        }
+
+        foreach ($paymentTypes as $pt) {
+            $paymentTypes = $this->getDoctrine()
+                    ->getRepository('AppBundle:PaymentType')
+                    ->findBy(['company' => $company, 'name' => $pt]);
+
+            if (count($paymentTypes) > 0) {
+                $paymentType = $paymentTypes[0];
+            } else {
+                // $paymentType = new PaymentType();
+                // $paymentType->setCompany($company)
+                //         ->setName($pt);
+                // $em->persist($paymentType);
+
+                // $em->flush();
+                $paymentType = $this->getDoctrine()
+                    ->getRepository('AppBundle:PaymentType')
+                    ->create($company,$pt);
+            }
+
+            $employeePaymentType = new \AppBundle\Entity\EmployeePaymentType();
+
 
             $employeePaymentType->setEmployee($employee)
                     ->setPaymentType($paymentType)
@@ -203,7 +330,7 @@ class EmployeeController extends Controller {
         $employees = $this->getDoctrine()
                 ->getRepository('AppBundle:Employee')
                 ->findBy(['isImportedToQb' => true]);
-                
+
 
         foreach($employees as $employee){
             $message = (new \Swift_Message("Import to QuickBooks Failed!"))
@@ -233,11 +360,11 @@ class EmployeeController extends Controller {
         $roles = $params['roles'];
         $firstName = $params['first_name'];
         $lastName = $params['last_name'];
-        $em = $this->getDoctrine()->getManager();                    
+        $em = $this->getDoctrine()->getManager();
 
         $employee = $this->getDoctrine()
                 ->getRepository('AppBundle:Employee')
-                ->edit($id,$firstName,$lastName);                
+                ->edit($id,$firstName,$lastName);
 
         $this->get('pp_employee.handler')->setRoles($employee, $roles);
 
@@ -250,7 +377,7 @@ class EmployeeController extends Controller {
      * @Route("/api/employees/{id}", name="apiEmployeeDelete")
      * @Method("DELETE")
      */
-    public function deleteAction($id, Request $request) {    
+    public function deleteAction($id, Request $request) {
         $employee = $this->getDoctrine()
                 ->getRepository('AppBundle:Employee')
                 ->delete($id);
@@ -277,6 +404,30 @@ class EmployeeController extends Controller {
         $json = $this->get('pp_util.handler')->serialize($employees);
 
         return new JsonResponse($json, 200, [], true);
+    }
+
+
+    /**
+     * @Route("/api/user", name="apiUser")
+     * @Method("GET")
+     */
+    public function userListAction() {
+
+
+        $employees = $this->getDoctrine()
+                ->getRepository('AppBundle:User')
+                ->getUsers();
+
+
+        // foreach ($employees as $key => $employee) {
+        //     if (!$employee->getEnabled()) {
+        //         unset($employees[$key]);
+        //     }
+        // }
+
+        $json = $this->get('pp_util.handler')->serialize($employees);
+
+        return new JsonResponse($employees, 200, [], true);
     }
 
     /**
@@ -350,7 +501,31 @@ class EmployeeController extends Controller {
 
         return new JsonResponse($json, 200, [], true);
     }
-    
+
+    /**
+     * @Route("/api/user/updateApprovers/", name="apiUserUpdateApprovers")
+     * @Method("GET")
+     */
+    public function getNewUserApproversAction($id) {
+        $company = $this->get('pp_util.handler')->getCompany($id);
+
+        $employees = $this->getDoctrine()
+                ->getRepository('AppBundle:Employee')
+                ->findBy(['enabled' => true]);
+
+        $approvers = [];
+
+        foreach ($employees as $employee) {
+            if ($employee->hasRole(Employee::$ROLE_APPROVER)) {
+                array_push($approvers, $employee);
+            }
+        }
+
+        $json = $this->get('pp_util.handler')->serialize($approvers);
+
+        return new JsonResponse($json, 200, [], true);
+    }
+
     /**
      * @Route("/api/company/{id}/approversfilter/", name="apiCompanyApproversFilterList")
      * @Method("GET")
@@ -366,13 +541,13 @@ class EmployeeController extends Controller {
 
         foreach ($employees as $employee) {
             if ($employee->hasRole(Employee::$ROLE_APPROVER)) {
-                
+
                 $purchases = $this->getDoctrine()
                     ->getRepository('AppBundle:Purchase')
                     ->findAllUnapprovedByEmployee($employee->getId());
-                
+
                 $unapprovedCount = count($purchases);
-                
+
                 array_push($approvers, ['employee' => $employee, 'unapprovedCount' => $unapprovedCount]);
             }
         }

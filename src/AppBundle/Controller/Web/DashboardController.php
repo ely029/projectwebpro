@@ -54,6 +54,10 @@ class DashboardController extends Controller {
                 $companies = $this->getDoctrine()->getRepository('AppBundle:Company')
                     ->findAll();
                 return $this->redirectToRoute('showCompanyUserDashboard', ['id' => $companies[0]->getId()]);
+               }  elseif ($user->getRoles()[0] == 'ROLE_SUPER_ADMIN'){
+                $companies = $this->getDoctrine()->getRepository('AppBundle:Company')
+                    ->findAll();
+                  return $this->redirectToRoute('showSuperAdminDashboard', ['id' => $companies[0]->getId()]);
             } else {
                 $this->get('security.token_storage')->setToken(null);
                 return $this->render('error/purchaser_error.html.twig', [

@@ -48,8 +48,8 @@ var data = { response: {}, calls: 0 };
 
                 if(r.data && data.calls > 1){
                     data.stop = true;
-                    $http.post('/api/employees/notifyqb', 
-                    {}, 
+                    $http.post('/api/employees/notifyqb',
+                    {},
                     {
                         ignoreLoadingBar: true
                     }
@@ -57,7 +57,7 @@ var data = { response: {}, calls: 0 };
                     });
                 }
                 $timeout(poller, 120000);
-        });      
+        });
     };
     poller();
 
@@ -592,8 +592,7 @@ app.controller('CompanyController', function ($scope, $http, $filter, $window, $
 
 
 
-
-app.controller('UserManagementController', function ($scope, $http, $filter, $timeout) {
+app.controller('AdminUserManagementController', function ($scope, $http, $filter, $timeout) {
     var vm = this;
     $scope.companyId = angular.element('#companyId').val();
     $scope.newUser = {};
@@ -620,7 +619,7 @@ app.controller('UserManagementController', function ($scope, $http, $filter, $ti
     }];
 
     $scope.init = function () {
-        $http.get('/api/company/' + $scope.companyId + '/employees').then(function (r) {
+        $http.get('/api/users').then(function (r) {
             $scope.users = r.data;
 
             $timeout(function () {
@@ -650,7 +649,7 @@ app.controller('UserManagementController', function ($scope, $http, $filter, $ti
                 vm.paymentTypes = r.data;
             });
         });
-    };    
+    };
 
     vm.onRemove = function ($item, $model) {
         $http.post('/api/company/' + $scope.companyId + '/employee/paymentTypes/remove', {
@@ -723,7 +722,279 @@ app.controller('UserManagementController', function ($scope, $http, $filter, $ti
                         name: "purchaser",
                         checked: true
                     }];
-                    
+
+                    $('#adduserModal').modal('hide');
+                    location.reload();
+                });
+
+                $http.get('/api/billing/' + $scope.companyId + '/update').then(function (r) {});
+
+
+            } else {
+                toastr.error(r.data.errorMessage, 'Error');
+            }
+        });
+    };
+    $scope.openAddUser = function () {
+        $scope.newUser.firstName = "";
+        $scope.newUser.lastName = "";
+        $scope.newUser.email = "";
+        $scope.listRoles = [{
+            name: "approver"
+        }, {
+            name: "accountant"
+        }, {
+            name: "admin"
+        }, {
+            name: "purchaser",
+            checked: true
+        }];
+        $('#adduserModal').modal('show');
+    }
+
+    $scope.getPaymentTypes = function (paymentTypes) {
+        var selected = [];
+        for (var i in paymentTypes) {
+            var r = paymentTypes[i];
+            selected.push(r.name);
+        }
+
+        return selected;
+    };
+
+    $scope.initEditUser = function (u) {
+        $scope.listRoles = [{
+            name: "approver",
+            tmp: 'ROLE_APPROVER'
+        }, {
+            name: "accountant",
+            tmp: 'ROLE_ACCOUNTANT'
+        }, {
+            name: "admin",
+            tmp: 'ROLE_ADMIN'
+        }, {
+            name: "purchaser",
+            checked: true
+        }];
+        $scope.targetUser = angular.copy(u.user);
+        $scope.targetEmployee = angular.copy(u);
+        var currentRoles = u.roles;
+        vm.multipleDemo.selectedPeople = [];
+        for (var i in vm.paymentTypes) {
+            var item = vm.paymentTypes[i];
+            for (var j in item.employee_payment_types) {
+                if (item.employee_payment_types[j].employeeId == $scope.targetEmployee.id) {
+                    vm.multipleDemo.selectedPeople.push(item);
+                }
+            }
+        }
+        //vm.multipleDemo.selectedPeople = [vm.people[5], vm.people[4]];
+
+        for (var i in currentRoles) {
+            var crole = currentRoles[i];
+
+            for (var j in $scope.listRoles) {
+                var lrole = $scope.listRoles[j];
+
+                if (lrole.tmp == crole) {
+                    lrole.checked = true;
+                }
+            }
+        }
+
+        $('#edituserModal').modal('show');
+    };
+    $scope.employeeId = $('#employeeId').val();
+    $scope.editUser = function () {
+        $scope.targetUser.roles = $scope.getRoles($scope.listRoles);
+
+        if ($scope.employeeId == $scope.targetEmployee.id) {
+            $('.accountant-link').addClass('invisible');
+            $('.approver-link').addClass('invisible');
+            $('.admin-link').addClass('invisible');
+            for (var i in $scope.targetUser.roles) {
+                switch ($scope.targetUser.roles[i]) {
+                    case 'accountant':
+                        $('.accountant-link').removeClass('invisible');
+                        break;
+                    case 'approver':
+                        $('.approver-link').removeClass('invisible');
+                        break;
+                    case 'admin':
+                        $('.admin-link').removeClass('invisible');
+                        break;
+                }
+            }
+        }
+
+        $http.put('/api/employees/' + $scope.targetEmployee.id, $scope.targetUser).then(function (r) {
+            $scope.init();
+            toastr.success('You have updated this user!');
+            $scope.listRoles = [{
+                name: "approver"
+            }, {
+                name: "accountant"
+            }, {
+                name: "admin"
+            }, {
+                name: "purchaser",
+                checked: true
+            }];
+            $('#edituserModal').modal('hide');
+        });
+    };
+
+    $scope.deleteUser = function (id) {
+        $http.delete('/api/employees/' + id).then(function (r) {
+            $scope.init();
+            toastr.success('You have disabled this user!');
+        });
+    };
+
+    $scope.getRoles = function (roles) {
+        var selected = [];
+        for (var i in roles) {
+            r = roles[i];
+            if (r.checked == true) {
+                selected.push(r.name);
+
+            }
+        }
+
+        return selected;
+    };
+});
+app.controller('UserManagementController', function ($scope, $http, $filter, $timeout) {
+    var vm = this;
+    $scope.companyId = angular.element('#companyId').val();
+    $scope.newUser = {};
+    $scope.listRoles = [{
+        name: "approver"
+    }, {
+        name: "accountant"
+    }, {
+        name: "admin"
+    }, {
+        name: "purchaser",
+        checked: true
+    }];
+    $scope.listDays = [{
+        name: "Monday"
+    }, {
+        name: "Tuesday"
+    }, {
+        name: "Wednesday"
+    }, {
+        name: "Thursday"
+    }, {
+        name: "Friday"
+    }];
+
+    $scope.init = function () {
+        $http.get('/api/company/' + $scope.companyId + '/employees').then(function (r) {
+            $scope.users = r.data;
+
+            $timeout(function () {
+                $('.ui-select-container').click(function () {
+                    var $this = $(this);
+                    $this.find('.ui-select-search').get(0).focus()
+                    $this.find('.ui-select-search').get(0).click()
+                });
+            });
+        });
+    };
+
+    $http.get('/api/company/' + $scope.companyId + '/paymentTypesList').then(function (r) {
+        vm.paymentTypes = r.data;
+    });
+
+    vm.singleDemo = {};
+    vm.singleDemo.color = '';
+    vm.multipleDemo = {};
+
+    vm.tagSelected = function ($item, $model) {
+        $http.post('/api/company/' + $scope.companyId + '/employee/paymentTypes/add', {
+            name: $item.name,
+            employeeId: $scope.targetEmployee.id
+        }).then(function (r) {
+            $http.get('/api/company/' + $scope.companyId + '/paymentTypesList').then(function (r) {
+                vm.paymentTypes = r.data;
+            });
+        });
+    };
+
+    vm.onRemove = function ($item, $model) {
+        $http.post('/api/company/' + $scope.companyId + '/employee/paymentTypes/remove', {
+            itemId: $item.id,
+            name: $item.name,
+            employeeId: $scope.targetEmployee.id
+        }).then(function (r) {
+            $http.get('/api/company/' + $scope.companyId + '/paymentTypesList').then(function (r) {
+                vm.paymentTypes = r.data;
+            });
+        });
+    };
+
+    $scope.removed = function ($item, $model) {
+        $http.post('/api/company/' + $scope.companyId + '/employee/paymentTypes/remove', {
+            itemId: $item.id,
+            name: $item.name,
+            employeeId: $scope.targetEmployee.id
+        }).then(function (r) {
+            $http.get('/api/company/' + $scope.companyId + '/paymentTypesList').then(function (r) {
+                vm.paymentTypes = r.data;
+            });
+        });
+    };
+
+    vm.tagTransform = function (newTag) {
+        var item = {
+            name: newTag
+        };
+
+        return item;
+    };
+
+    $scope.formatRoleText = function (role) {
+        return role.replace("ROLE_", "");;
+    };
+
+    $scope.initAddUser = function () {
+        vm.multipleDemo.selectedPeople = [];
+        $scope.openAddUser();
+    };
+
+    $scope.init();
+
+    $scope.addUser = function () {
+        $scope.newUser.roles = $scope.getRoles($scope.listRoles);
+        $scope.newUser.companyId = angular.element('#companyId').val();
+        $scope.newUser.paymentTypes = $scope.getPaymentTypes(vm.multipleDemo.selectedPeople);
+
+        //return;
+        $http.post('/api/company/' + $scope.newUser.companyId + '/employees', $scope.newUser).then(function (r) {
+            if (r.data.success == true) {
+                toastr.info(r.data.message);
+                $scope.init();
+                $scope.newUser = {};
+
+                $http.get('/api/company/' + $scope.companyId + '/paymentTypesList').then(function (r) {
+                    vm.paymentTypes = r.data;
+                });
+
+                $http.get('/api/company/' + $scope.companyId + '/employees').then(function (r) {
+                    $scope.users = r.data;
+                    $scope.listRoles = [{
+                        name: "approver"
+                    }, {
+                        name: "accountant"
+                    }, {
+                        name: "admin"
+                    }, {
+                        name: "purchaser",
+                        checked: true
+                    }];
+
                     $('#adduserModal').modal('hide');
                     location.reload();
                 });
@@ -1315,7 +1586,7 @@ app.controller('AccountantDashboardController', function ($scope, $http, $sce, $
                 //continue; // Do not import again
             }
             var trimmed_cost_code = (item.cost.code_number).trim();
-            
+
             //var cost_code = trimmed_cost_code.replace("·", "-");
             //var payment_type = item.purchase.payment_type.name.replace("·", "-");
             var cost_code = trimmed_cost_code.replace(/·/g, "-");
@@ -1333,7 +1604,7 @@ app.controller('AccountantDashboardController', function ($scope, $http, $sce, $
                 'memo': item.memo,
                 'amount': item.amount,
                 'purchase_date' : $scope.formatPurchaseDateQB(item.purchase.date_of_purchase),
-                'total_amount': item.purchase.total_amount, 
+                'total_amount': item.purchase.total_amount,
                 'vendor': item.purchase.vendor ? item.purchase.vendor.name : null,
                 'payment_type': payment_type,
                 'transaction_type': item.purchase.payment_type.transaction_type ? item.purchase.payment_type.transaction_type.name : null,
@@ -1670,7 +1941,7 @@ app.controller('ApproverDashboardController', function ($scope, $http, $timeout)
                 },
                 unapprovedCount: unapprovedCount
             });
-            $scope.getSelectedApprover();            
+            $scope.getSelectedApprover();
         });
         $http.get('/api/company/' + $scope.companyId + '/vendors').then(function (r) {
             $scope.vendors = r.data.vendors;
@@ -1679,8 +1950,8 @@ app.controller('ApproverDashboardController', function ($scope, $http, $timeout)
             $scope.paymentTypes = r.data;
         });
         $http.get('/api/company/' + $scope.companyId + '/paymentTypesList').then(function (r) {
-            $scope.paymentTypes = r.data;                        
-        });        
+            $scope.paymentTypes = r.data;
+        });
     };
     $scope.setSearch = function (search) {
         // if (search != '')
@@ -1697,16 +1968,16 @@ app.controller('ApproverDashboardController', function ($scope, $http, $timeout)
                 company: $scope.companyId
             }
             // $http.post('/api/company/' + $scope.companyId + '/vendors', {
-            //     name: $scope.vendorName,                
+            //     name: $scope.vendorName,
             //     purchaser: $scope.employeeId
-            // }).then(function (r){                       
+            // }).then(function (r){
             //     if(r.data.isNewVendor)
-            //         toastr.success('New Vendor has been created!');                
+            //         toastr.success('New Vendor has been created!');
             //     var v = r.data.vendor;
             //     $http.get('/api/company/' + $scope.companyId + '/vendors').then(function (r) {
-            //         $scope.vendors = r.data.vendors;  
+            //         $scope.vendors = r.data.vendors;
             //         $scope.setVendor(v);
-            //     });            
+            //     });
 
             // });
 
@@ -1718,22 +1989,22 @@ app.controller('ApproverDashboardController', function ($scope, $http, $timeout)
                 company: $scope.companyId
             }
             //     $http.post('/api/company/' + $scope.companyId + '/vendors', {
-            //         name: $item,                
+            //         name: $item,
             //         purchaser: $scope.employeeId
-            //     }).then(function (r){                
+            //     }).then(function (r){
             //         if(r.data.isNewVendor)
-            //             toastr.success('New Vendor has been created!');                
+            //             toastr.success('New Vendor has been created!');
             //         var v = r.data.vendor;
             //         $http.get('/api/company/' + $scope.companyId + '/vendors').then(function (r) {
-            //             $scope.vendors = r.data.vendors;  
+            //             $scope.vendors = r.data.vendors;
             //             $scope.setVendor(v);
-            //         });         
+            //         });
             //     });
         } else {
             $scope.isNewVendor = false;
             $scope.targetPurchase.vendor = $item;
             console.log($item);
-            // $scope.setVendor($item);      
+            // $scope.setVendor($item);
         }
 
     };
@@ -1748,19 +2019,19 @@ app.controller('ApproverDashboardController', function ($scope, $http, $timeout)
             });
         });
     }
-    $scope.setVendor = function (vendor) {        
+    $scope.setVendor = function (vendor) {
             $scope.targetPurchase.vendor = vendor;
             $http.post('/api/purchases/' + $scope.targetPurchase.id + '/vendor', {
                 vendor: $scope.targetPurchase.vendor.id
             }).then(function (r) {
                 if (r.data.isNewVendor)
-                    toastr.success('New Vendor has been created!');                
-            });        
+                    toastr.success('New Vendor has been created!');
+            });
     }
-    $scope.clearVendor = function ($event, $select){ 
-        $scope.targetPurchase.vendor = null;        
+    $scope.clearVendor = function ($event, $select){
+        $scope.targetPurchase.vendor = null;
         //stops click event bubbling
-        $event.stopPropagation(); 
+        $event.stopPropagation();
         //to allow empty field, in order to force a selection remove the following line
         $select.selected = undefined;
         //reset search query
@@ -2037,24 +2308,24 @@ app.controller('ApproverDashboardController', function ($scope, $http, $timeout)
             // else
             //     $scope.setVendor($scope.targetPurchase.vendor);
 
-            
+
             toUpdate.items = $scope.targetPurchase.purchase_items;
             $scope.updateAmountWithSalesTax();
             $http.put('/api/purchases/' + $scope.targetPurchase.id, toUpdate).then(function (d) {
                 toastr.success('Purchase has been updated!');
                 if (d.data.isNewVendor)
-                    toastr.success('New Vendor has been created!');  
-                $('#targetPurchaseModal').modal('hide');                              
+                    toastr.success('New Vendor has been created!');
+                $('#targetPurchaseModal').modal('hide');
                 if (!isApprove) {
                     if ($scope.changeStatusCount == 0) {
-                        
+
                         $http.get('/api/company/' + $scope.companyId + '/approver/unapprovedpurchases').then(function (r) {
                             $scope.projects = r.data.projects;
                             angular.forEach($scope.projects, function (project) {
                                 angular.forEach(project.purchases, function (purchase) {
                                     purchase.date_of_purchase = new Date(purchase.date_of_purchase);
                                 });
-                            });                            
+                            });
                             $scope.openActiveProject($scope.targetPurchase.project.id);
                         });
                     } else {
@@ -2282,7 +2553,7 @@ app.controller('ProjectsController', function ($scope, $http, $timeout) {
                 $scope.customerJobs.unshift({id: 0, name: 'No Customer:No Job'});
             });
         });
-    };    
+    };
 
     $scope.disableInstruction = function () {
         $http.post('/api/users/current/setDoneDuplicate', {
@@ -2306,7 +2577,7 @@ app.controller('ProjectsController', function ($scope, $http, $timeout) {
             return;
         }
     };
-    $scope.closeTargetProjectModal = function () {        
+    $scope.closeTargetProjectModal = function () {
         if($scope.isQbIntegrated == false){
             $('#targetProjectModal').modal('hide');
             return true;
@@ -2333,7 +2604,7 @@ app.controller('ProjectsController', function ($scope, $http, $timeout) {
                 return true;
             }
         }
-        
+
     };
 
     $scope.addProject = function () {
@@ -2433,7 +2704,7 @@ app.controller('ProjectsController', function ($scope, $http, $timeout) {
             if(!r.data.project.customer) {
                 $scope.targetProject.customerJob = 'No Customer:No Job';
             }
-            
+
 
             if (!$scope.isDoneCostCode) {
 
@@ -2448,7 +2719,7 @@ app.controller('ProjectsController', function ($scope, $http, $timeout) {
                 keyboard: false,
                 show: true
             });;
-            
+
         });
     };
 
@@ -2768,10 +3039,10 @@ app.controller('VendorController', function ($scope, $http) {
             $scope.vendors = r.data.vendors;
         });
     };
-    $scope.setMergeItem = function (vendor) {        
+    $scope.setMergeItem = function (vendor) {
         $scope.mergeItem = vendor;
     }
-    $scope.addVendor = function () {        
+    $scope.addVendor = function () {
         if($scope.newName.length > 0){
             $scope.validName = true;
             $http.post('/api/company/' + $scope.companyId + '/vendors', {
@@ -2790,7 +3061,7 @@ app.controller('VendorController', function ($scope, $http) {
             $scope.validName = false;
             // toastr.error("Vendor name cannot be blank")
         }
-        
+
     }
     $scope.editVendor = function (vendor) {
         $http.put('/api/vendors/' + vendor.id, {

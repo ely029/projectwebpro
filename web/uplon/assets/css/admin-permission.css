@@ -1,0 +1,340 @@
+.sidenav {
+width: 280px;
+z-index: 10;
+top: 66px;
+background-color: white;
+overflow-x: hidden;
+padding: 8px 0;
+margin-left: -22px;
+}
+
+.sidenav a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 25px;
+  color: white;
+  display: block;
+}
+
+.sidenav p{
+  color:black;
+}
+
+.sidenav p:hover {
+  /*color: #064579;*/
+}
+
+.sidenav a{
+  font-size: 15px;
+padding-left: 102px;
+margin-top: -7px;
+}
+
+.transaction{
+  margin-left:-19px;
+}
+
+.sidenav p{
+  margin-left:82px;
+}
+
+
+
+.sidenav a i{
+position: relative;
+margin-left: 1px;
+font-size: 35px;
+padding: 20px;
+border-radius: 13px;
+margin-top:30px;
+}
+
+.main{
+height: 500px;
+width: 1000px;
+margin-top: -477px;
+margin-left: 282px;
+padding-left:123px;
+}
+
+.container-admin{
+  background-color:gray;
+}
+
+
+
+.sidenav-hide{
+  display:none;
+}
+.top-nav-button{
+  color: white;
+position: absolute;
+font-size: 25px;
+margin-top: 22px;
+margin-left: -64px;
+}
+.top-nav-button p{
+  margin-top: -24px;
+  margin-left: 30px;
+  font-size: 16px;
+}
+/* USERS PAGE */
+.table-user{
+  background-color:white;
+  padding:13px;
+  margin-top:20px;
+}
+/* END USERS PAGE */
+/* TRANSACTIONS PAGE **/
+.col-table-transactions{
+  background-color:white;
+  margin-top:20px;
+  padding:23px;
+}
+.col-transactions{
+  margin-top: 116px;
+  margin-left: -165px;
+}
+/* END TRANSACTIONS PAGE*/
+/** REPORTS PAGE**/
+.reports-list{
+   list-style:none;
+   margin-top: 135px;
+   margin-left: -190px;
+}
+
+/** END REPORTS PAGE**/
+/** media queries **/
+/*
+  IPAD x
+*/
+@media only screen and (min-device-width: 375px) and (max-device-height: 812px) and (orientation : landscape) and (-webkit-device-pixel-ratio: 3){
+
+
+
+}
+
+@media only screen and (min-device-width: 375px) and (max-device-height: 812px) and (orientation : portrait) and (-webkit-device-pixel-ratio: 3){
+
+/* TOP NAV HEADER */
+  .top-nav-button{
+     margin-left:-3px;
+  }
+
+  .top-nav-button p{
+    font-size:11px;
+    margin-top:-18px;
+    margin-left:13px;
+  }
+/* END TOP NAV HEADER */
+  .sidenav{
+    width:431px;
+    margin-top:115px;
+  }
+  .sidenav span{
+      margin-left:100px;
+  }
+  .sidenav a{
+    padding-left:205px;
+  }
+  .col-users{
+    margin-left:-8px;
+    margin-top:154px;
+  }
+  .col-transactions{
+    margin-top:130px;
+    margin-left:-10px;
+  }
+  .col-table-transactions table th{
+      font-size:10px;
+  }
+
+  .col-table-transactions table td{
+      font-size:8px;
+  }
+
+  .reports-list{
+    margin-top: 160px;
+    margin-left: -60px;
+  }
+}
+
+#wrapper {
+  padding-left: 250px;
+  transition: all 0.4s ease 0s;
+}
+
+#sidebar-wrapper {
+  margin-left: -250px;
+  left: 250px;
+  width: 250px;
+  background: #ffffff;
+  position: fixed;
+  height: 100%;
+  overflow-y: auto;
+  z-index: 1000;
+  transition: all 0.4s ease 0s;
+  margin-top:-68px;
+}
+
+#wrapper.active {
+  padding-left: 0;
+}
+
+#wrapper.active #sidebar-wrapper {
+  left: 0;
+}
+
+#page-content-wrapper {
+  width: 100%;
+}
+
+
+
+.sidebar-nav {
+  position: absolute;
+  top: 0;
+  width: 250px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar-nav li {
+  line-height: 40px;
+  text-indent: 20px;
+}
+
+.sidebar-nav li a {
+  color: #999999;
+  display: block;
+  text-decoration: none;
+  padding-left: 60px;
+}
+
+.sidebar-nav li a span:before {
+  position: absolute;
+  left: 0;
+  color: #41484c;
+  text-align: center;
+  width: 20px;
+  line-height: 18px;
+}
+
+/*.sidebar-nav li a:hover,
+.sidebar-nav li.active {
+  
+}*/
+
+.sidebar-nav li a:active,
+.sidebar-nav li a:focus {
+  text-decoration: none;
+}
+
+.sidebar-nav > .sidebar-brand {
+  height: 65px;
+  line-height: 60px;
+  font-size: 18px;
+}
+
+.sidebar-nav > .sidebar-brand a {
+  color: #999999;
+}
+
+/*.sidebar-nav > .sidebar-brand a:hover {
+  
+}*/
+
+
+
+.content-header {
+  height: 65px;
+  line-height: 65px;
+}
+
+.content-header h1 {
+  margin: 0;
+  margin-left: 20px;
+  line-height: 65px;
+  display: inline-block;
+}
+
+#menu-toggle {
+    text-decoration: none;
+}
+
+.btn-menu {
+  color: #000;
+} 
+
+.inset {
+  padding: 20px;
+}
+
+@media (max-width:767px) {
+
+#wrapper {
+  padding-left: 0;
+}
+
+#sidebar-wrapper {
+  left: 0;
+}
+
+#wrapper.active {
+  position: relative;
+  left: 250px;
+}
+
+#wrapper.active #sidebar-wrapper {
+  left: 250px;
+  width: 250px;
+  transition: all 0.4s ease 0s;
+}
+
+#menu-toggle {
+  display: inline-block;
+}
+
+.inset {
+  padding: 15px;
+}
+
+}
+
+.hamburger,.fa-calendar{
+  cursor: pointer;
+}
+
+#transactions{
+  background-color:blue;
+  margin-left:4px;
+}
+
+#reports{
+  margin-left: -18px;
+  background-color:rgba(75, 127, 82, 1);
+}
+#home{
+  background-color:black;
+  margin-left:-20px;
+}
+
+#settings{
+  background-color:gray;
+  margin-left:-15px;
+}
+
+.sidenav p.home{
+  margin-left:100px;
+}
+.sidenav p.reports{
+  margin-left:99px;
+}
+.sidenav p.settings{
+   margin-left:101px;
+}
+
+.sidenav a i:hover{
+   font-size:37px;
+}

@@ -1,0 +1,111 @@
+
+{% extends 'base.html.twig' %}
+{% block admin_body %}
+<div id="wrapper">
+
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <div class="sidenav">
+                <span><a href="{{ path('showSuperAdminDashboard', {'id': companyId}) }}"><i class="fa fa-home home" id="home"></i></a><p class="home">Home</p></span>
+                <span><a href="{{ path('showSuperAdminTransactionList', {'id': companyId}) }}" class="transaction"><i class="fa fa-list" id="transactions"></i></a><p>Transactions</p></span>
+                <span><a href="{{ path('showSuperAdminReports', {'id': companyId}) }}"><i class="fa fa-newspaper-o" id="reports"></i></a><p class="reports">Reports</p></span>
+                <span><a href="{{ path('showSuperAdminUser', {'id': companyId}) }}"><i class="fa fa-cogs settings" id="settings"></i></a><p class="settings">Settings</p></span>
+             </div>
+        </div>
+
+        <!-- Page content -->
+        <div id="page-content-wrapper">
+            <div class="page-content inset" data-spy="scroll" data-target="#spy">
+                
+        
+     <div class="select-box-transactionlist" style="margin-top:82px;">
+      <i class="fa fa-calendar" style="font-size:20px;"></i><span class="" style="margin-left:14px;">Start Date:<input class="start-date"type="date" value="Start Date">End Date:<input class="end-date" type="date" value="End Date"></span>
+
+      <br/>
+               <select name="types" value="" class="types">
+                <option value="">All Transaction Type</option>
+                <option value="CREDIT CARD">Credit Card</option>
+                <option value="CASH">Cash</option>
+                <option value="INVOICE">Invoice</option>
+                <option value="REIMBURSEMENTS">Reimbursements</option>
+                <option value="CHECK">Check</option>
+                <option value="CHECK REQUEST">Check Request</option>                 
+               </select>
+               <select name="submitters" value="" class="submitters">
+                 <option value="">All Submitters</option>
+                {% for submitters in submitter %}
+                    <option value="{{ submitters.id }}">{{ submitters.submitter}}</option>
+                {% endfor %}
+               </select>
+               <select name="status" class="status" value="">
+                 <option value="">All Status</option>
+                 <option value="REVIEWED">Reviewed</option>
+                 <option value="NOT_REVIEWED">Not Reviewed</option>
+               </select>
+     </div>
+     <div class="table-transactions">
+         
+     </div>
+  </div>
+ </div>                  
+</div>
+
+  
+         
+
+{% endblock %}
+
+{% block stylesheets %}
+{% endblock %}
+
+{% block javascripts %}
+
+<script type="text/javascript">
+      $('document').ready(function(){
+        
+ 
+                 $.ajax({
+                      type: "POST",
+                      url: "{{ url('getTransactions')}}",
+                      data: {
+                          type: $('.types').val(),
+                          submitter: $('.submitters').val(),
+                          status: $('.status').val(),
+                          startDate: $('.start-date').val(),
+                          endDate: $('.end-date').val()
+                      },
+                      success: function(data) {
+                          $('.table-transactions').html(data);
+                   
+                      },
+                      error: function(result) {
+                        alert('error');
+                      }
+                 });
+
+           $('.types,.submitters,.status,.start-date,.end-date').change(function(){
+                   
+                   $.ajax({
+                      type: "POST",
+                      url: "{{ url('getTransactions')}}",
+                      data: {
+                          type: $('.types').val(),
+                          submitter: $('.submitters').val(),
+                          status: $('.status').val(),
+                          startDate: $('.start-date').val(),
+                          endDate: $('.end-date').val()
+                      },
+                      success: function(data) {
+                          $('.table-transactions').html(data);
+                   
+                      },
+                      error: function(result) {
+                        alert('error');
+                      }
+                 });
+
+           });
+    });
+</script>
+
+{% endblock %}

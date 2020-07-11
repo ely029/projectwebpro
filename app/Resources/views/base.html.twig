@@ -13,6 +13,9 @@
         <link rel="icon" type="image/x-icon" href="{{ asset('images/pprologo.png') }}"/>
         <link href="{{ asset('uplon/assets/plugins/toastr/toastr.min.css') }}" rel="stylesheet" type="text/css"/>
         <link rel="stylesheet" href="{{ asset('uplon/assets/plugins/morris/morris.css') }}">
+        {% if is_granted('ROLE_SUPER_ADMIN') %}
+        <link href="{{ asset('uplon/assets/css/admin-permission.css') }}" rel="stylesheet" type="text/css"/>
+        {% endif %}
         <link href="{{ asset('uplon/assets/plugins/switchery/switchery.min.css') }}" rel="stylesheet"/>
         <link href="{{ asset('uplon/assets/css/bootstrap-datepicker.min.css') }}" rel="stylesheet"/>
         <link href="{{ asset('uplon/assets/css/style.css') }}" rel="stylesheet" type="text/css"/>
@@ -57,15 +60,35 @@
 
         <!-- Navigation Bar-->
         <header id="topnav">
+            {% if is_granted('ROLE_SUPER_ADMIN')%}
+            <div class="topbar-main" style="margin-top:38px;">
+            {% else %}
+                <div class="topbar-main">
+            {% endif %}
             <div class="topbar-main">
                 <div data-ng-controller="CompanyController" class="container relative">
+                      {% if is_granted('ROLE_SUPER_ADMIN')%}
+                      <span>
+                        <i class="fa fa-bars hamburger top-nav-button"  data-toggle="offcanvas" style="font-size:22px;color:white;margin-left:-42px;position:absolute;margin-top:20px;">
+                      </i>
+                      <p style="margin-left: -20px;margin-top: 20px;color: white;position: absolute;margin-top: 22px;">HOME</p>
+                      </span>
 
+                      {% endif %}
                     <!-- LOGO -->
-                    <div class="topbar-left">
+                    {% if is_granted('ROLE_SUPER_ADMIN')%}
+                    <div style="margin-left: 400px;margin-top:-42px;">
                         <a href="#" class="logo">
                             <img src="{{ asset('images/logo-web-banner.png') }}"/>
                         </a>
                     </div>
+                    {% else %}
+                        <div class="topbar-left">
+                        <a href="#" class="logo">
+                            <img src="{{ asset('images/logo-web-banner.png') }}"/>
+                        </a>
+                    </div>
+                    {% endif %}
 
                     <div style="display: none;">
                         <div class="upgrade-section">
@@ -141,7 +164,7 @@
                                     <i class="zmdi zmdi-power"></i>
                                     <span>Reset Demo</span>
                                 </a>
-                                
+
                                 <a href="{{ path('fos_user_security_logout') }}" class="dropdown-item notify-item">
                                     <i class="zmdi zmdi-power"></i>
                                     <span>Logout</span>
@@ -160,7 +183,8 @@
             <!-- end container -->
         </div>
         <!-- end topbar-main -->
-
+        {% if is_granted('ROLE_SUPER_ADMIN')%}
+    {% else %}
         <div class="navbar-custom">
             <div class="container">
                 <div id="navigation">
@@ -235,7 +259,7 @@
                                 <i class="fa fa-gear"></i>
                                 Administration<span class="caret"></span></button>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="{{ path('showCompanyAccountDashboard', {'id': companyId}) }}">Account</a>         
+                                <a class="dropdown-item" href="{{ path('showCompanyAccountDashboard', {'id': companyId}) }}">Account</a>
                                 {# {% if isQbIntegrated %}                   #}
                                 <a class="dropdown-item" href="{{ path('classesCompanyDashboard', {'id': companyId}) }}">Classes</a>
                                 {# {% endif %} #}
@@ -243,7 +267,7 @@
                                 <a class="dropdown-item" href="{{ path('showCompanyAdminDashboard', {'id': companyId}) }}">Jobs, Items & Accounts</a>
                                 <a class="dropdown-item" href="{{ path('showCompanyPaymentTypesDashboard', {'id': companyId}) }}">Payment Types</a>
                                 {# {% if isQbIntegrated %} #}
-                                <a class="dropdown-item" href="{{ path('vendorsCompanyDashboard', {'id': companyId}) }}">Vendors</a>                                
+                                <a class="dropdown-item" href="{{ path('vendorsCompanyDashboard', {'id': companyId}) }}">Vendors</a>
                                 {# <a class="dropdown-item" href="{{ path('apiExportQbExceptions', {'id': companyId}) }}">QB Errors</a>                                 #}
                                 {# {% endif %} #}
                                 {#% if app.user.isDoneWizard %#}
@@ -260,6 +284,7 @@
                 </div>
             </div>
         </div>
+    {% endif %}
     </header>
     <!-- End Navigation Bar-->
 
@@ -279,13 +304,13 @@
                             data-toggle="dropdown" aria-expanded="false">Actions <span class="m-l-5"><i
                                 class="fa fa-cog"></i></span></button>
                     <div class="dropdown-menu">
-    
-    
+
+
                         <!--a class="dropdown-item" href="#" data-toggle="modal" data-target="#sendRecurringReminderModal">Schedule Recurring Reminder</a-->
-    
+
                         <a class="dropdown-item" href="#">Help (About this page)</a>
                     </div>
-    
+
                 </div>
                     #}
                     <h4 class="page-title">
@@ -295,6 +320,7 @@
             </div>
 
             {% block body %}{% endblock %}
+            {% block admin_body%}{% endblock %}
 
             <!-- Footer -->
             <footer class="footer text-right">
@@ -651,7 +677,7 @@
         {% endif %}
         $('img').error(function () {
             $(this).attr('src', '{{ asset("images/missing_image.png") }}' );
-        });        
+        });
     </script>
 
     {% block javascripts %}{% endblock %}

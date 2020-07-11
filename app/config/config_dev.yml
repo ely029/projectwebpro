@@ -9,7 +9,7 @@ framework:
 
 parameters:
     httpProtocol: http
-    
+
 web_profiler:
     toolbar: true
     intercept_redirects: false
@@ -65,6 +65,12 @@ monolog:
 
 # For dev testing
 swiftmailer:
-    transport: gmail
-    username:  projectpro.info@gmail.com
-    password:  projectpro1234
+    transport:  smtp
+    encryption: ssl
+    port:	    465
+    host:       smtp.sendgrid.net
+    username:   apikey
+    password:   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
+    auth_mode:  login
+    spool:
+        type: memory

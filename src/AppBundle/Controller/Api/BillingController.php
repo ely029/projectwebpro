@@ -191,7 +191,7 @@ class BillingController extends Controller {
                 return $this->redirect($this->generateUrl('showCompanyAccountDashboard', ['id' => $companyId, 'error' => $json["errors"][0]]));
             }
         } else {
-            
+
         }
         // THIS AREA IS COMMENTED BECAUSE WE DONT WANT TO BILL immediately, uncomment if you want to bill immediately
 //            // update billing to date now
@@ -228,7 +228,7 @@ class BillingController extends Controller {
      * @Route("/api/billing/{id}/payment", name="apiBillingCheckNearing")
      */
     public function checkIfNearingBillingAction(Request $request) {
-        
+
     }
 
     /**

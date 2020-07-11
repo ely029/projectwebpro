@@ -87,6 +87,11 @@ class Employee
     protected $chargifyCustomerId;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    protected $phoneNumber;
+
+    /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Project", mappedBy="approver")
      */
     protected $approvedProjects;

@@ -1,0 +1,284 @@
+
+{% extends 'base.html.twig' %}
+{% block admin_body %}
+<div id="wrapper">
+
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <div class="sidenav">
+                <span><a href="{{ path('showSuperAdminDashboard', {'id': companyId}) }}"><i class="fa fa-home home" id="home"></i></a><p class="home">Home</p></span>
+                <span><a href="{{ path('showSuperAdminTransactionList', {'id': companyId}) }}" class="transaction"><i class="fa fa-list" id="transactions"></i></a><p>Transactions</p></span>
+                <span><a href="{{ path('showSuperAdminReports', {'id': companyId}) }}"><i class="fa fa-newspaper-o" id="reports"></i></a><p class="reports">Reports</p></span>
+                <span><a href="{{ path('showSuperAdminUser', {'id': companyId}) }}"><i class="fa fa-cogs settings" id="settings"></i></a><p class="settings">Settings</p></span>
+             </div>
+        </div>
+
+        <!-- Page content -->
+        <div id="page-content-wrapper">
+            <div class="page-content inset" data-spy="scroll" data-target="#spy">
+                    <ul style="margin-top:110px;list-style:none;">
+                        <li>Reports</li>
+                        <ul style="list-style:none;">
+                           <li>Transactions</li>
+                           <ul style="list-style:none;">
+                               <li><a href="#" data-toggle="modal" data-target="#modal-all-transactions">All Transactions</a></li>
+                               <li><a href="#" data-toggle="modal" data-target="#modal-transaction-status">Transactions By Status</a></li>
+                               <li><a href="#" data-toggle="modal" data-target="#modal-transaction-submitter">Transactions By Submitter</a></li>
+                              <li><a href="#" data-toggle="modal" data-target="#modal-transaction-type">Transactions By Type</a></li>
+                           </ul>
+                        </ul>
+                    </ul>
+            </div>
+        </div>
+</div>
+
+
+<div class="modal fade" id="modal-all-transactions" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Reports</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+              <i class="fa fa-calendar"></i><span>
+              Start Date:<input type="date" class="start-date">End Date:<input type="date" class="end-date"></span>
+
+              <br/>
+              <select class="transaction-type">
+                <option value="">All transaction type</option>
+                <option value="CASH">Cash Check</option>
+                <option value="CHECK">Check</option>
+                <option value="CHECK REQUEST">CHECK REQUEST</option>
+                <option value="CREDIT CARD">CREDIT CARD</option>
+                <option value="INVOICE">INVOICE</option>
+                <option value="REIMBURSEMENTS">REIMBURSEMENTS</option>
+              </select>
+              <select class="submitter">
+                <option value="">All Submitter</option>
+                {% for submitters in submitter %}
+                    <option value="{{ submitters.id }}">{{ submitters.submitter}}
+                    </option>
+                {% endfor %}
+              </select>
+              <select class="status">
+                <option value="REVIEWED">Reviewed</option>
+                <option value="NOT_REVIEWED">Not Reviewed</option>
+              </select>
+               
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn" style="background-color:orange;"data-dismiss="modal">Cancel</button>
+        <button class="btn-export" type="button" class="btn btn-primary">Export</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modal-transaction-status" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Reports</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+              <i class="fa fa-calendar"></i><span>
+              Start Date:<input type="date" class="start-date">End Date:<input type="date" class="end-date"></span>
+
+              <br/>
+              <select class="status">
+                <option value="REVIEWED">Reviewed</option>
+                <option value="NOT_REVIEWED">Not Reviewed</option>
+              </select>
+               
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn" style="background-color:orange;"data-dismiss="modal">Cancel</button>
+        <button class="btn-export" type="button" class="btn btn-primary">Export</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modal-all-transactions" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Reports</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+              <i class="fa fa-calendar"></i><span>
+              Start Date:<input type="date" class="start-date">End Date:<input type="date" class="end-date"></span>
+
+              <br/>
+              <select class="transaction-type">
+                <option value="">All transaction type</option>
+                <option value="CASH">Cash Check</option>
+                <option value="CHECK">Check</option>
+                <option value="CHECK REQUEST">CHECK REQUEST</option>
+                <option value="CREDIT CARD">CREDIT CARD</option>
+                <option value="INVOICE">INVOICE</option>
+                <option value="REIMBURSEMENTS">REIMBURSEMENTS</option>
+              </select>
+              <select class="submitter">
+                <option value="">All transaction type</option>
+                <option value="CASH">Cash Check</option>
+                <option value="CHECK">Check</option>
+                <option value="CHECK REQUEST">CHECK REQUEST</option>
+                <option value="CREDIT CARD">CREDIT CARD</option>
+                <option value="INVOICE">INVOICE</option>
+                <option value="REIMBURSEMENTS">REIMBURSEMENTS</option>
+              </select>
+              <select class="status">
+                <option value="REVIEWED">Reviewed</option>
+                <option value="NOT_REVIEWED">Not Reviewed</option>
+              </select>
+               
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn" style="background-color:orange;"data-dismiss="modal">Cancel</button>
+        <button class="btn-export" type="button" class="btn btn-primary">Export</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modal-transaction-submitter" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Reports</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+              <i class="fa fa-calendar"></i><span>
+              Start Date:<input type="date" class="start-date">End Date:<input type="date" class="end-date"></span>
+
+              <br/>
+              <select class="submitter">
+                <option value="">All  Submitter</option>
+                {% for submitters in submitter %}
+                    <option value="{{ submitters.id }}">{{ submitters.submitter}}</option>
+                {% endfor %}                                                                                            
+              </select>
+               
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn" style="background-color:orange;"data-dismiss="modal">Cancel</button>
+        <button class="btn-export" type="button" class="btn btn-primary">Export</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="modal-transaction-type" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Reports</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+              <i class="fa fa-calendar"></i><span>
+              Start Date:<input type="date" class="start-date">End Date:<input type="date" class="end-date"></span>
+
+              <br/>
+              <select class="transaction-type">
+                <option value="">All transaction type</option>
+                <option value="CASH">Cash Check</option>
+                <option value="CHECK">Check</option>
+                <option value="CHECK REQUEST">CHECK REQUEST</option>
+                <option value="CREDIT CARD">CREDIT CARD</option>
+                <option value="INVOICE">INVOICE</option>
+                <option value="REIMBURSEMENTS">REIMBURSEMENTS</option>
+              </select>
+      
+               
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn" style="background-color:orange;"data-dismiss="modal">Cancel</button>
+        <button class="btn-export" type="button" class="btn btn-primary">Export</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+{% endblock %}
+
+{% block stylesheets %}
+{% endblock %}
+
+{% block javascripts %}
+
+
+<script type="text/javascript">
+      $('document').ready(function(){
+
+         $('#sidebar-wrapper').toggleClass("hiddenElement");
+          /*Menu-toggle*/
+    $(".hamburger").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("active");
+    });
+
+    /*Scroll Spy*/
+    $('body').scrollspy({ target: '#spy', offset:80});
+
+    /*Smooth link animation*/
+    $('a[href*=#]:not([href=#])').click(function() {
+        if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') || location.hostname == this.hostname) {
+
+            var target = $(this.hash);
+            target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+            if (target.length) {
+                $('html,body').animate({
+                    scrollTop: target.offset().top
+                }, 1000);
+                return false;
+            }
+        }
+    });
+      
+      $('.btn-export').click(function(){
+           
+           $.ajax({
+                      type: "POST",
+                      url: "{{ url('processExcelAllTransaction')}}",
+                      data: {
+                          type: $('.types').val(),
+                          submitter: $('.submitters').val(),
+                          status: $('.status').val(),
+                          startDate: $('.start-date').val(),
+                          endDate: $('.end-date').val()
+                      },
+                      success: function(data) {
+                       alert('Excel exported Successfully');
+                  
+                      },
+                      error: function(result) {
+                        alert('error');
+                      }
+                 });
+      });     
+
+
+});
+</script>
+
+{% endblock %}

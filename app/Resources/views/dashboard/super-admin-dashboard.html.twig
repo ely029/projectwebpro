@@ -1,0 +1,69 @@
+
+{% extends 'base.html.twig' %}
+{% block admin_body %}
+
+<div id="wrapper">
+
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <div class="sidenav">
+                <span><a href="{{ path('showSuperAdminDashboard', {'id': companyId}) }}"><i class="fa fa-home home" id="home"></i></a><p class="home">Home</p></span>
+                <span><a href="{{ path('showSuperAdminTransactionList', {'id': companyId}) }}" class="transaction"><i class="fa fa-list" id="transactions"></i></a><p>Transactions</p></span>
+                <span><a href="{{ path('showSuperAdminReports', {'id': companyId}) }}"><i class="fa fa-newspaper-o" id="reports"></i></a><p class="reports">Reports</p></span>
+                <span><a href="{{ path('showSuperAdminUser', {'id': companyId}) }}"><i class="fa fa-cogs settings" id="settings"></i></a><p class="settings">Settings</p></span>
+             </div>
+        </div>
+
+        <!-- Page content -->
+        <div id="page-content-wrapper">
+            <div class="page-content inset" data-spy="scroll" data-target="#spy">
+                
+                           
+
+          </div>
+
+        </div>
+
+  </div>
+
+{% endblock %}
+
+{% block stylesheets %}
+{% endblock %}
+
+{% block javascripts %}
+
+
+<script type="text/javascript">
+      $('document').ready(function(){
+
+         $('#sidebar-wrapper').toggleClass("hiddenElement");
+          /*Menu-toggle*/
+    $(".hamburger").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("active");
+    });
+
+    /*Scroll Spy*/
+    $('body').scrollspy({ target: '#spy', offset:80});
+
+    /*Smooth link animation*/
+    $('a[href*=#]:not([href=#])').click(function() {
+        if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') || location.hostname == this.hostname) {
+
+            var target = $(this.hash);
+            target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+            if (target.length) {
+                $('html,body').animate({
+                    scrollTop: target.offset().top
+                }, 1000);
+                return false;
+            }
+        }
+    });
+
+   });
+</script>
+
+
+{% endblock %}
