@@ -8,7 +8,7 @@ imports:
 #        query_cache_driver: apc
 parameters:
     httpProtocol: https
-    
+
 monolog:
     handlers:
         main:
@@ -29,8 +29,8 @@ monolog:
 #     host: '%sendgrid_mailer_host%'
 #     username: '%sendgrid_mailer_user%'
 #     password: '%sendgrid_mailer_password%'
-    
-# Gmail 
+
+# Gmail
 swiftmailer:
     transport: gmail
     username:  projectpro.info@gmail.com
@@ -55,11 +55,11 @@ swiftmailer:
 #         dbname: '%env(RDS_DB_NAME)%'
 #         user: '%env(RDS_USERNAME)%'
 #         password: '%env(RDS_PASSWORD)%'
-        
+
 doctrine:
     dbal:
-        host: 'a07yd3a6okcidwap.cbetxkdyhwsb.us-east-1.rds.amazonaws.com'
+        host: 'projectpro.ckmlnd5q6yq4.us-east-1.rds.amazonaws.com'
         port: '3306'
-        dbname: 'yjk65kqfblljtc6t'
-        user: 'whtjbcmxca2mva1a'
-        password: 'da7ow979nv0c9cge'
+        dbname: 'projectpro'
+        user: 'projectpro'
+        password: 'CDE#4rfv'
