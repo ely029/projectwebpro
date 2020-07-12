@@ -545,7 +545,7 @@ app.controller('UserManagementController', function ($scope, $http, $filter, $ti
 
         $http.put('/api/users/' + $scope.targetEmployee.id, $scope.targetUser).then(function (r) {
             $scope.init();
-            toastr.success('You have updated this user!');
+            toastr.success('You have updated this users!');
             $scope.listRoles = [{
                 name: "approver"
             }, {
