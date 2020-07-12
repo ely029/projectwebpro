@@ -591,6 +591,7 @@ app.controller('CompanyController', function ($scope, $http, $filter, $window, $
 });
 
 
+
 app.controller('UserManagementController', function ($scope, $http, $filter, $timeout) {
     var vm = this;
     $scope.companyId = angular.element('#companyId').val();

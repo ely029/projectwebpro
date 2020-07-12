@@ -66,7 +66,8 @@
                 <div class="topbar-main">
             {% endif %}
             <div class="topbar-main">
-                <div data-ng-controller="CompanyController" class="container relative">
+                <div {% if is_granted('ROLE_SUPER_ADMIN')%} {% else %}
+                  data-ng-controller="CompanyController"{% endif %}   class="container relative">
                       {% if is_granted('ROLE_SUPER_ADMIN')%}
                       <span>
                         <i class="fa fa-bars hamburger top-nav-button"  data-toggle="offcanvas" style="font-size:22px;color:white;margin-left:-42px;position:absolute;margin-top:20px;">
@@ -101,7 +102,7 @@
                         </div>
                     </div>
 
-                    <div data-ng-controller="CompaniesController" class="btn-group company-section" style="">
+                    <div {% if is_granted('ROLE_SUPER_ADMIN') %}{% else %}data-ng-controller="CompaniesController"{% endif %} class="btn-group company-section" style="">
                         <button type="button" style="" class="btn bg-white border dropdown-toggle waves-effect waves-light" data-toggle="dropdown" aria-expanded="false">{[ selectedCompany ]}<span class="caret" style="margin-left: 7px;"></span>
                         </button>
                         <div class="dropdown-menu" style="overflow: scroll; height: auto; max-height: 350px;">
@@ -137,7 +138,7 @@
                                 <!-- End mobile menu toggle-->
                             </li>
 
-                            <li class="nav-item dropdown notification-list" data-ng-controller="MenuController">
+                            <li class="nav-item dropdown notification-list" {% if is_granted('ROLE_SUPER_ADMIN')%}{% else %}data-ng-controller="MenuController"{% endif %}>
                                 <a class="nav-link dropdown-toggle arrow-none waves-effect waves-light nav-user" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                                     <span class="hello-name">Hello
                                         {{ app.user.firstName }}
@@ -343,7 +344,7 @@
 
     </div>
     <!-- End wrapper -->
-    <div data-ng-controller="CreateCompanyController">
+    <div {% if is_granted('ROLE_SUPER_ADMIN')%}{% else %}data-ng-controller="CreateCompanyController"{% endif %}>
         <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" id="newCompanyModal">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -368,7 +369,7 @@
 
     <!-- Credit Card Controller Here, now moved to account.html.twig -->
 
-    <div data-ng-controller="ReminderController">
+    <div {% if is_granted('ROLE_SUPER_ADMIN')%}{% else %}data-ng-controller="ReminderController"{% endif %}>
         <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" id="sendReminderNowPurchasersModal">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -669,7 +670,11 @@
     <script src="{{ asset('bower_components/angular-loading/loading-bar.js') }}"></script>
     <script src="{{ asset('bower_components/drift/dist/Drift.min.js') }}"></script>
     <script src="{{ asset('bower_components/jquery-form/jquery.form.js') }}"></script>
+    {% if is_granted('ROLE_SUPER_ADMIN')%}
+    <script src="{{ asset('core/adminuser.js') }}"></script>
+    {% else %}
     <script src="{{ asset('core/application.js') }}"></script>
+    {% endif %}
 
     <script>
         {% if error is defined and error is not null and error is not empty %}
