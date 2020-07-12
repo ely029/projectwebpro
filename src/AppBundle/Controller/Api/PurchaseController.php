@@ -1243,7 +1243,7 @@ public function markReviewedTransactionAction($id, Request $request){
  $statement->bindValue('a',$id);
  $statement->execute();
 
- return new Response(true);
+ return new Response('true');
 
 }
 
