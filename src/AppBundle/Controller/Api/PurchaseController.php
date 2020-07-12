@@ -1219,7 +1219,7 @@ class PurchaseController extends Controller {
       $em = $this->getDoctrine()->getManager();
 
       $query = "UPDATE transactions set is_deleted = 1 where id = :param1";
-      $stmt = $em->prepare($query);
+      $stmt  = $em->getConnection()->prepare($query);
 
       $params = array(
         "param1"  => $id
