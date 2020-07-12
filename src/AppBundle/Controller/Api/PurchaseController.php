@@ -1206,7 +1206,7 @@ class PurchaseController extends Controller {
                 $em->persist($transaction);
                 $em->flush();
 
-                return new JsonResponse(['success' => 'true']);
+                return new JsonResponse(true);
             }
          }
 
@@ -1223,7 +1223,7 @@ class PurchaseController extends Controller {
       $statement->bindValue('a',$id);
       $statement->execute();
 
-      return new JsonResponse(['success' => 'true']);
+      return new JsonResponse(true);
 
     }
 
@@ -1240,7 +1240,7 @@ public function markReviewedTransactionAction($id, Request $request){
  $statement->bindValue('a',$id);
  $statement->execute();
 
- return new JsonResponse(['success' => 'true']);
+ return new JsonResponse(true);
 
 }
 
