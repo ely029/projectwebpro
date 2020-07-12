@@ -12,20 +12,18 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 
-class EmployeeController extends Controller {
+class SuperAdminController extends Controller {
 
     /**
-     * @Route("/api/company/{id}/employees", name="apiEmployeeNew")
+     * @Route("/api/users/new", name="apiUsersNew")
      * @Method("POST")
      */
-    public function newAction($id, Request $request) {
+    public function newAction(Request $request) {
         $params = $this->getRequest();
-        $company = $this->get('pp_util.handler')->getCompany($id);
         $firstName = $params['firstName'];
         $lastName = $params['lastName'];
         $email = $params['email'];
         $roles = $params['roles'];
-        $paymentTypes = $params['paymentTypes'];
 
 
         $existingUser = $this->getDoctrine()
@@ -60,14 +58,14 @@ class EmployeeController extends Controller {
 
         $existingEmployee = $this->getDoctrine()
                 ->getRepository('AppBundle:Employee')
-                ->findOneBy(['user' => $user, 'company' => $company]);
+                ->findOneBy(['user' => $user]);
 
         if (!$existingEmployee) {
-            $this->get('pp_employee.handler')->createEmployee($user, $company, $admin, $roles);
+            $this->get('pp_user.handler')->createUser($user, $admin, $roles);
 
             $employee = $this->getDoctrine()
                     ->getRepository('AppBundle:Employee')
-                    ->findBy(['user' => $user, 'company' => $company]);
+                    ->findBy(['user' => $user]);
             $employeeId = $employee[0]->getId();
         } else {
             $employee = $existingEmployee;
@@ -89,54 +87,21 @@ class EmployeeController extends Controller {
                     ->find($employeeId);
 
         // Clear Employee Payment Types
-        $existingEmployeePaymentTypes = $this->getDoctrine()
-                ->getRepository('AppBundle:EmployeePaymentType')
-                ->findBy(['employee' => $employee]);
-
-        foreach ($existingEmployeePaymentTypes as $eept) {
-            $em->remove($eept);
-        }
-
-        foreach ($paymentTypes as $pt) {
-            $paymentTypes = $this->getDoctrine()
-                    ->getRepository('AppBundle:PaymentType')
-                    ->findBy(['company' => $company, 'name' => $pt]);
-
-            if (count($paymentTypes) > 0) {
-                $paymentType = $paymentTypes[0];
-            } else {
-                // $paymentType = new PaymentType();
-                // $paymentType->setCompany($company)
-                //         ->setName($pt);
-                // $em->persist($paymentType);
-
-                // $em->flush();
-                $paymentType = $this->getDoctrine()
-                    ->getRepository('AppBundle:PaymentType')
-                    ->create($company,$pt);
-            }
-
-            $employeePaymentType = new \AppBundle\Entity\EmployeePaymentType();
-
-
-            $employeePaymentType->setEmployee($employee)
-                    ->setPaymentType($paymentType)
-                    ->setEnabled(true);
-
-            $em->persist($employeePaymentType);
-        }
+        // $existingEmployeePaymentTypes = $this->getDoctrine()
+        //         ->getRepository('AppBundle:EmployeePaymentType')
+        //         ->findBy(['employee' => $employee]);
 
         $em->flush();
 
         if ($existingEmployee) {
             return new JsonResponse([
-                'message' => 'User/Employee Already Exists. User Information Updated.',
+                'message' => 'User Already Exists. User Information Updated.',
                 'success' => true
                     ], 201);
         }
 
         return new JsonResponse([
-            'message' => 'Employee has been added!',
+            'message' => 'User has been added!',
             'success' => true
                 ], 201);
     }
@@ -224,7 +189,7 @@ class EmployeeController extends Controller {
 
 
     /**
-     * @Route("/api/employees/{id}", name="apiEmployeeUpdate")
+     * @Route("/api/user/{id}", name="apiUserUpdate")
      * @Method({"PUT", "PATCH"})
      */
     public function updateAction($id, Request $request) {
@@ -237,9 +202,9 @@ class EmployeeController extends Controller {
 
         $employee = $this->getDoctrine()
                 ->getRepository('AppBundle:Employee')
-                ->edit($id,$firstName,$lastName);
+                ->editUser($id,$firstName,$lastName);
 
-        $this->get('pp_employee.handler')->setRoles($employee, $roles);
+        $this->get('pp_user.handler')->setRoles($employee, $roles);
 
         $em->flush();
 
@@ -247,32 +212,32 @@ class EmployeeController extends Controller {
     }
 
     /**
-     * @Route("/api/employees/{id}", name="apiEmployeeDelete")
+     * @Route("/api/users/{id}", name="apiUserDelete")
      * @Method("DELETE")
      */
     public function deleteAction($id, Request $request) {
         $employee = $this->getDoctrine()
                 ->getRepository('AppBundle:Employee')
-                ->delete($id);
+                ->deleteUser($id);
         return new Response('Disabled user ' . $id, 204);
     }
 
     /**
-     * @Route("/api/company/{id}/employees", name="apiEmployeeList")
+     * @Route("/api/users/list", name="apiUsersList")
      * @Method("GET")
      */
-    public function listAction($id) {
-        $company = $this->get('pp_util.handler')->getCompany($id);
+    public function userlistAction() {
 
         $employees = $this->getDoctrine()
-                ->getRepository('AppBundle:Employee')
-                ->findBy(['company' => $company]);
+                ->getRepository('AppBundle:User')
+                ->getUsers();
 
-        foreach ($employees as $key => $employee) {
-            if (!$employee->getEnabled()) {
-                unset($employees[$key]);
-            }
-        }
+
+        // foreach ($employees as $key => $employee) {
+        //     if (!$employee->getEnabled()) {
+        //         unset($employees[$key]);
+        //     }
+        // }
 
         $json = $this->get('pp_util.handler')->serialize($employees);
 

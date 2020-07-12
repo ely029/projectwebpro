@@ -86,6 +86,8 @@ class Employee
      */
     protected $chargifyCustomerId;
 
+    
+
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Project", mappedBy="approver")
      */

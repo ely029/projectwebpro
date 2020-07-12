@@ -42,11 +42,57 @@ class EmployeeRepository extends EntityRepository
         $em->flush();
         return $employee;
     }
+
+    public function createUser($user, $roles, $isDefaultAccountant = false)
+    {
+        $em = $this->getEntityManager();
+        $employee = new Employee();
+        $employee->setUser($user);
+
+        if ($isDefaultAccountant) {
+            $employee->setIsDefaultAccountant(true);
+        }
+
+        foreach ($roles as $role) {
+            if ($role == 'approver') {
+                $employee->addRole(Employee::$ROLE_APPROVER);
+            } elseif ($role == 'accountant') {
+                $employee->addRole(Employee::$ROLE_ACCOUNTANT);
+            } elseif ($role == 'admin') {
+                $employee->addRole(Employee::$ROLE_ADMIN);
+            }
+        }
+
+        $em->persist($employee);
+        $em->flush();
+        return $employee;
+    }
+
     public function edit($employeeId, $firstName, $lastName)
     {
         $em = $this->getEntityManager();
         $employee = $this->find($employeeId);
-        
+
+        $user = $employee->getUser();
+
+        $firstName = $firstName;
+        if ($firstName) {
+            $user->setFirstName($firstName);
+        }
+        $lastName = $lastName;
+        if ($lastName) {
+            $user->setLastName($lastName);
+        }
+        $em->flush();
+
+        return $employee;
+    }
+
+    public function editUser($employeeId, $firstName, $lastName)
+    {
+        $em = $this->getEntityManager();
+        $employee = $this->find($employeeId);
+
         $user = $employee->getUser();
 
         $firstName = $firstName;
@@ -62,6 +108,16 @@ class EmployeeRepository extends EntityRepository
         return $employee;
     }
     public function delete($employeeId)
+    {
+        $em = $this->getEntityManager();
+        $employee = $this->find($employeeId);
+
+        $employee->setEnabled(false);
+        $em->flush();
+        return true;
+    }
+
+    public function deleteUser($employeeId)
     {
         $em = $this->getEntityManager();
         $employee = $this->find($employeeId);

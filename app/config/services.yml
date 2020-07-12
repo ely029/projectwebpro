@@ -63,6 +63,11 @@ services:
         arguments: ["@service_container"]
         public: true
 
+    pp_user.handler:
+        class: AppBundle\Handler\UserHandler
+        arguments: ["@service_container"]
+        public: true
+
     pp_util.handler:
         class: AppBundle\Handler\ProjectProUtilHandler
         arguments: ["@service_container"]

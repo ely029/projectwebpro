@@ -115,8 +115,7 @@ class UserRepository extends EntityRepository
            a.email,
            a.firstName,
            a.lastName,
-           b.roles,
-           b.phoneNumber
+           b.roles
            from AppBundle:User a
            left join AppBundle:Employee b WITH b.user = a.id
            where a.enabled = 1 order by a.lastName

@@ -342,7 +342,7 @@ app.controller('UserManagementController', function ($scope, $http, $filter, $ti
     }];
 
     $scope.init = function () {
-        $http.get('/api/company/' + $scope.companyId + '/employees').then(function (r) {
+        $http.get('/api/users/list').then(function (r) {
             $scope.users = r.data;
 
             $timeout(function () {
@@ -355,9 +355,9 @@ app.controller('UserManagementController', function ($scope, $http, $filter, $ti
         });
     };
 
-    // $http.get('/api/company/' + $scope.companyId + '/paymentTypesList').then(function (r) {
-    //     vm.paymentTypes = r.data;
-    // });
+    $http.get('/api/company/' + $scope.companyId + '/paymentTypesList').then(function (r) {
+        vm.paymentTypes = r.data;
+    });
 
     vm.singleDemo = {};
     vm.singleDemo.color = '';
@@ -419,21 +419,21 @@ app.controller('UserManagementController', function ($scope, $http, $filter, $ti
 
     $scope.addUser = function () {
         $scope.newUser.roles = $scope.getRoles($scope.listRoles);
-        $scope.newUser.companyId = angular.element('#companyId').val();
         $scope.newUser.paymentTypes = $scope.getPaymentTypes(vm.multipleDemo.selectedPeople);
 
         //return;
-        $http.post('/api/company/' + $scope.newUser.companyId + '/employees', $scope.newUser).then(function (r) {
+        $http.post('/api/users/new', $scope.newUser).then(function (r) {
             if (r.data.success == true) {
                 toastr.info(r.data.message);
                 $scope.init();
                 $scope.newUser = {};
 
-                $http.get('/api/company/' + $scope.companyId + '/paymentTypesList').then(function (r) {
-                    vm.paymentTypes = r.data;
-                });
+                // $http.get('/api/company/' + $scope.companyId + '/paymentTypesList').then(function (r) {
+                //     vm.paymentTypes = r.data;
+                // });
 
-                $http.get('/api/company/' + $scope.companyId + '/employees').then(function (r) {
+
+                $http.get('/api/users/list').then(function (r) {
                     $scope.users = r.data;
                     $scope.listRoles = [{
                         name: "approver"
@@ -450,7 +450,7 @@ app.controller('UserManagementController', function ($scope, $http, $filter, $ti
                     location.reload();
                 });
 
-                $http.get('/api/billing/' + $scope.companyId + '/update').then(function (r) {});
+                // $http.get('/api/billing/' + $scope.companyId + '/update').then(function (r) {});
 
 
             } else {
@@ -503,14 +503,7 @@ app.controller('UserManagementController', function ($scope, $http, $filter, $ti
         $scope.targetEmployee = angular.copy(u);
         var currentRoles = u.roles;
         vm.multipleDemo.selectedPeople = [];
-        for (var i in vm.paymentTypes) {
-            var item = vm.paymentTypes[i];
-            for (var j in item.employee_payment_types) {
-                if (item.employee_payment_types[j].employeeId == $scope.targetEmployee.id) {
-                    vm.multipleDemo.selectedPeople.push(item);
-                }
-            }
-        }
+
         //vm.multipleDemo.selectedPeople = [vm.people[5], vm.people[4]];
 
         for (var i in currentRoles) {
@@ -550,7 +543,7 @@ app.controller('UserManagementController', function ($scope, $http, $filter, $ti
             }
         }
 
-        $http.put('/api/employees/' + $scope.targetEmployee.id, $scope.targetUser).then(function (r) {
+        $http.put('/api/users/' + $scope.targetEmployee.id, $scope.targetUser).then(function (r) {
             $scope.init();
             toastr.success('You have updated this user!');
             $scope.listRoles = [{
@@ -568,7 +561,7 @@ app.controller('UserManagementController', function ($scope, $http, $filter, $ti
     };
 
     $scope.deleteUser = function (id) {
-        $http.delete('/api/employees/' + id).then(function (r) {
+        $http.delete('/api/users/' + id).then(function (r) {
             $scope.init();
             toastr.success('You have disabled this user!');
         });
