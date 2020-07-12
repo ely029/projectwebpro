@@ -1223,7 +1223,7 @@ class PurchaseController extends Controller {
       $statement->bindValue('a',$id);
       $statement->execute();
 
-      return new JsonResponse(true);
+      return true;
 
     }
 
@@ -1240,7 +1240,7 @@ public function markReviewedTransactionAction($id, Request $request){
  $statement->bindValue('a',$id);
  $statement->execute();
 
- return new JsonResponse(true);
+ return true;
 
 }
 
