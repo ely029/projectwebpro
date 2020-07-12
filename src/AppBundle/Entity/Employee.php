@@ -47,7 +47,7 @@ class Employee
      * @Serializer\Expose
      */
     protected $user;
-    
+
     /**
      * @ORM\Column(type="boolean")
      * @Serializer\Expose
@@ -87,11 +87,6 @@ class Employee
     protected $chargifyCustomerId;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    protected $phoneNumber;
-
-    /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Project", mappedBy="approver")
      */
     protected $approvedProjects;
@@ -100,17 +95,17 @@ class Employee
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Purchase", mappedBy="purchaser")
      */
     protected $purchases;
-    
+
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Purchase", mappedBy="approver")
      */
     protected $approverPurchases;
-    
+
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Purchase", mappedBy="decliner")
      */
     protected $declinerPurchases;
-    
+
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\EmployeePaymentType", mappedBy="employee")
      * @Serializer\Expose
@@ -335,7 +330,7 @@ class Employee
     public function addPurchase(\AppBundle\Entity\Purchase $purchase)
     {
         $this->purchases[] = $purchase;
-    
+
         return $this;
     }
 
