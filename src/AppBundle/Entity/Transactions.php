@@ -63,6 +63,13 @@ class Transactions
      */
     private $userId;
 
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="is_deleted", type="integer")
+     */
+    private $isDeleted;
+
 
     /**
      * Get id
@@ -218,4 +225,3 @@ class Transactions
         return $this->userId;
     }
 }
-
