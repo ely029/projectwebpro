@@ -1226,7 +1226,7 @@ class PurchaseController extends Controller {
       );
       $stmt->execute($params);
 
-      return true;
+      return new Response('true');
 
     }
 
@@ -1243,7 +1243,7 @@ public function markReviewedTransactionAction($id, Request $request){
  $statement->bindValue('a',$id);
  $statement->execute();
 
- return true;
+ return new Response(true);
 
 }
 
