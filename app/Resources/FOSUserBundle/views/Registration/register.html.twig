@@ -210,7 +210,7 @@
                                 <option value="WV">West Virginia</option>
                                 <option value="WI">Wisconsin</option>
                                 <option value="WY">Wyoming</option>
-                            </select>                    
+                            </select>
                         </fieldset>
                         <fieldset class="form-group">
                             <label for="exampleInputEmail1">Postal Code</label>
@@ -485,8 +485,8 @@
                         {#{{ form_widget(form.plainPassword.second, { 'attr': {'class': 'form-control', 'placeholder': 'Repeat Password' } }) }}#}
                         {#</fieldset>#}
                         <fieldset class="form-group">
-                            <p style="font-weight: bold;">You are an Administrator. If you are also an Accountant, 
-                                check the box below. If you are not an Accountant, please enter an Accountant's 
+                            <p style="font-weight: bold;">You are an Administrator. If you are also an Accountant,
+                                check the box below. If you are not an Accountant, please enter an Accountant's
                                 email address so that we can send purchase information to the right person.
                             </p>
                         </fieldset>
@@ -505,6 +505,9 @@
                         </fieldset>
                         <input type="hidden" id="card-nonce" name="nonce">
                         <input type="hidden" id="billing-zip" name="billingZip">
+                        <span style="margin-left:165px;">
+                          <img src="/images/project-pro-hub-qr-code.png" width="200" height="200"/>
+                        </span>
                         <div class="registration_footer">
                             <button id="sq-creditcard" class="button-credit-card" onclick="requestCardNonce(event)">
                                 Register <i class="fa fa-check fa-fw"></i>
@@ -583,4 +586,3 @@
 </script>
 </body>
 </html>
-

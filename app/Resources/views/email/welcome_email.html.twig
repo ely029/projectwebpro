@@ -1,4 +1,4 @@
-<h3>Hello
+<!-- <h3>Hello
     <b>{% if user.firstName == '' %}{{ user.email }}{% else %}{{ user.firstName }}{% endif %}</b>,
 </h3>
 <p>Thank you for using ProjectPro. To get started, <a href="{{ passwordSetUrl }}">Click Here</a> to set your password.
@@ -6,4 +6,13 @@
 
 <p>
     <small>This message was intended for: {{ user.email }}</small>
-</p>
+</p> -->
+
+<b>Hello `{{ user.firstName}}`</b>
+
+<p>Administrator would like you to signup for ProjectPro to manage field purchase for Company.</p>
+
+<p><a href="{{ passwordSetUrl }}">Click Here</a> to set your password</p>
+  <img src="images/project-pro-hub-qr-code.png" width="50" height="50"/>
+<p>After setting your password, please scan the QR Code below with your phone to download the ProjectPro mobile app. Use
+  this for transaction capture & purchase submittal</p>
