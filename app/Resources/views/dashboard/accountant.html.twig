@@ -206,11 +206,7 @@ Accountants can export purchases for import into the accounting software.</span>
                     </select>
                 </div>
                 <div class="form-group">
-                    <select class="form-control" data-ng-model="reconciledFilter" data-ng-change="changeStatusFilter()">
-                        <option value="ALL">ALL</option>
-                        <option value="1">RECONCILED</option>
-                        {# <option value="0">NOT RECONCILED</option> #}
-                    </select>
+                
                 </div>
                 <div class="form-group">
                     <select class="form-control paymenttypefilter" title="All Payment Types" multiple data-ng-model="paymentTypesFilter" data-ng-options="p.id as p.name for p in listPaymentTypes">
