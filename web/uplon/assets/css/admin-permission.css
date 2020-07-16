@@ -338,3 +338,8 @@ margin-left: -64px;
 .sidenav a i:hover{
    font-size:37px;
 }
+
+.company-section .dropdown-toggle
+{
+  margin-right:-60px;
+}
