@@ -1254,22 +1254,26 @@ class PurchaseController extends Controller {
 
     }
 
-        //     /**
-        //      * @Route("/transaction/reviewed" name="apiTransactionReviewed")
-        //      * @Method("POST")
-        //      */
-        // public function markReviewedTransactionAction(Request $request){
 
-        //  $em = $this->getDoctrine()->getManager();
-        //  $id = $request->request->get('transactionId');
+    /**
+          * @Route("/transaction/reviewed", name="apiTransactionReviewed")
+          * @Method("POST")
+          */
+    public function markReviewedTransactionAction(Request $request){
 
-        //  $statement = $em->getConnection()->prepare('
-        //       UPDATE transactions set status = "REVIEWED" where id = :a');
-        //  $statement->bindValue('a',$id);
-        //  $statement->execute();
+      $em = $this->getDoctrine()->getManager();
+      $id = $request->request->get('id');
+      $query = "UPDATE transactions set status = 'REVIEWED' where id = :param1";
+      $stmt  = $em->getConnection()->prepare($query);
 
-        //  return new Response('true');
+      $params = array(
+        "param1"  => $id
+      );
 
-        // }
+      $stmt->execute($params);
+
+      return new JsonResponse('true');
+
+    }
 
 }
