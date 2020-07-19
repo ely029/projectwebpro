@@ -1241,16 +1241,13 @@ class PurchaseController extends Controller {
 
       $em = $this->getDoctrine()->getManager();
       $id = $request->request->get('transactionId');
-      $query = "UPDATE transactions set is_deleted = 1 where id = :param1";
+      $query = "UPDATE transactions set is_deleted = :namo where id = :id";
       $stmt  = $em->getConnection()->prepare($query);
+      $stmt->bindValue(':id',$id);
+      $stmt->bindValue(':namo',1);
+      $stmt->execute();
 
-      $params = array(
-        "param1"  => $id
-      );
-
-      $stmt->execute($params);
-
-      return new JsonResponse('true');
+      return new Response('true');
 
     }
 
@@ -1263,16 +1260,30 @@ class PurchaseController extends Controller {
 
       $em = $this->getDoctrine()->getManager();
       $id = $request->request->get('id');
-      $query = "UPDATE transactions set status = 'REVIEWED' where id = :param1";
+      $amount = $request->request->get('amount');
+      $type = $request->request->get('type');
+      $date = $request->request->get('createdDate');
+
+      $query = "UPDATE transactions set status = 'REVIEWED',total_amount = :amount,created_date = :createdDate,transaction_type = :type where id = :id";
       $stmt  = $em->getConnection()->prepare($query);
+      $stmt->bindValue(':id',$id);
+      $stmt->bindValue(':amount',$amount);
+      $stmt->bindValue(':createdDate',$date);
+      $stmt->bindValue(':type',$type);
+      $stmt->execute();
 
-      $params = array(
-        "param1"  => $id
-      );
+      $query = "select transaction_type,total_amount,created_date from transactions where id = :id";
+      $stmt  = $em->getConnection()->prepare($query);
+      $stmt->bindValue(':id',$id);
+      $stmt->execute();
 
-      $stmt->execute($params);
 
-      return new JsonResponse('true');
+      $result = $stmt->fetchAll();
+
+
+      
+
+      return new JsonResponse(array('transactions' =>[$result]));
 
     }
 
