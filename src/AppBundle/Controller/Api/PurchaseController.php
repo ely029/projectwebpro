@@ -1192,9 +1192,10 @@ class PurchaseController extends Controller {
               status,url_image as urlImage,
               total_amount as totalAmount,
               created_date as createdDate
-              from transactions where user_id =:a and id = :b and is_deleted <> 1');
+              from transactions where user_id =:a and id = :b and is_deleted <> 1 and status = :c');
           $statement->bindValue('a',$userId);
           $statement->bindValue('b',$id);
+          $statement->bindValue('c','REVIEWED');
           $statement->execute();
           $result = $statement->fetchAll();
 
