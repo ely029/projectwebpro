@@ -1178,6 +1178,29 @@ class PurchaseController extends Controller {
           return new JsonResponse($result);
          }
 
+
+         /**
+     * @Route("/transaction/{userId}/{id}", name="apiGetTransactions")
+     * @Method("GET")
+     */
+    public function getTransactionAction($id,$userId,Request $request) {
+
+          $em = $this->getDoctrine()->getManager();
+
+          $statement = $em->getConnection()->prepare('select id as transactionId,
+              transaction_type as transactionType,
+              status,url_image as urlImage,
+              total_amount as totalAmount,
+              created_date as createdDate
+              from transactions where user_id =:a and id = :b and is_deleted <> 1');
+          $statement->bindValue('a',$userId);
+          $statement->bindValue('b',$id);
+          $statement->execute();
+          $result = $statement->fetchAll();
+
+          return new JsonResponse($result);
+         }
+
     /**
      * @Route("/transaction/post", name="apiTransactionPost")
      * @Method("POST")
@@ -1211,40 +1234,42 @@ class PurchaseController extends Controller {
          }
 
          /**
-          * @Route("/transaction/delete/{id}", name="apiTransactionDelete")
-          * @Method("GET")
+          * @Route("/transaction/delete", name="apiTransactionDelete")
+          * @Method("POST")
           */
-    public function deleteTransactionAction($id, Request $request){
+    public function deleteTransactionAction(Request $request){
 
       $em = $this->getDoctrine()->getManager();
-
+      $id = $request->request->get('transactionId');
       $query = "UPDATE transactions set is_deleted = 1 where id = :param1";
       $stmt  = $em->getConnection()->prepare($query);
 
       $params = array(
         "param1"  => $id
       );
+
       $stmt->execute($params);
 
-      return new Response('true');
+      return new JsonResponse('true');
 
     }
 
-    /**
-     * @Route("/transaction/reviewed/{id}", name="apiTransactionReviewed")
-     * @Method("GET")
-     */
-public function markReviewedTransactionAction($id, Request $request){
+            /**
+             * @Route("/transaction/reviewed" name="apiTransactionReviewed")
+             * @Method("POST")
+             */
+        public function markReviewedTransactionAction(Request $request){
 
- $em = $this->getDoctrine()->getManager();
+         $em = $this->getDoctrine()->getManager();
+         $id = $request->request->get('transactionId');
 
- $statement = $em->getConnection()->prepare('
-      UPDATE transactions set status = "REVIEWED" where id = :a');
- $statement->bindValue('a',$id);
- $statement->execute();
+         $statement = $em->getConnection()->prepare('
+              UPDATE transactions set status = "REVIEWED" where id = :a');
+         $statement->bindValue('a',$id);
+         $statement->execute();
 
- return new Response('true');
+         return new Response('true');
 
-}
+        }
 
 }
