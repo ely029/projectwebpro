@@ -1195,7 +1195,7 @@ class PurchaseController extends Controller {
               from transactions where user_id =:a and id = :b and is_deleted <> 1 and status = :c');
           $statement->bindValue('a',$userId);
           $statement->bindValue('b',$id);
-          $statement->bindValue('c','REVIEWED');
+          $statement->bindValue('c','NOT_REVIEWED');
           $statement->execute();
           $result = $statement->fetchAll();
 
