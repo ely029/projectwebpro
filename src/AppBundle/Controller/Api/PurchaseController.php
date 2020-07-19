@@ -1170,7 +1170,7 @@ class PurchaseController extends Controller {
               status,url_image as urlImage,
               total_amount as totalAmount,
               created_date as createdDate
-              from transactions where user_id =:a and is_deleted <> 1 or status <> :b');
+              from transactions where user_id =:a and is_deleted <> 1 and status <> :b');
           $statement->bindValue('a',$id);
           $statement->bindValue('b','REVIEWED');
           $statement->execute();
