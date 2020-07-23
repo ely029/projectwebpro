@@ -224,4 +224,18 @@ class Transactions
     {
         return $this->userId;
     }
+
+    /**
+     * Set isDeleted
+     *
+     * @param \integer $isDeleted
+     *
+     * @return Transactions
+     */
+    public function setIsDeleted($isDeleted)
+    {
+        $this->isDeleted = $isDeleted;
+
+        return $this;
+    }
 }
